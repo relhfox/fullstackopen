@@ -13,16 +13,29 @@ const App = () => {
         'The only way to go fast, is to go well.'
     ]
     
+    const defaultRating = Array(8).fill(0)
+
     const [selected, setSelected] = useState(0)
 
+    const [rating, setRating] = useState(defaultRating)
+
     const randomAnecdote = () => {
-        const rand = Math.floor(Math.random() * 8)
-        setSelected(rand)
+        const randomize = Math.floor(Math.random() * 8)
+        setSelected(randomize)
+    }
+
+    const ratingUp = () => {
+        const whyTheStateUpdateIsSoAsyncProcess = [...rating]
+        whyTheStateUpdateIsSoAsyncProcess[selected] += 1
+        setRating(whyTheStateUpdateIsSoAsyncProcess)
     }
 
     return (
         <>
             {anecdotes[selected]}
+
+            <br />
+            Has {rating[selected]} likes <button onClick={ratingUp}>+Like</button>
 
             <br />
             <button onClick={randomAnecdote}>Next anecdote</button>
