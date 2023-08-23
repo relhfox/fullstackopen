@@ -1,5 +1,21 @@
 import { useState } from 'react'
 
+const Anecdote = ({anecdotes, rating, index, title}) => {
+    return (
+        <div>
+            <h2>Anecdote {title}</h2>
+
+            "{anecdotes[index]}"
+
+            <p>Has {rating[index]} likes</p>
+        </div>
+    )
+}
+
+const Buttn = ({handler, text}) => {
+    return <button onClick={handler}>{text}</button>
+}
+
 const App = () => {
     
     const anecdotes = [
@@ -19,6 +35,10 @@ const App = () => {
 
     const [rating, setRating] = useState(defaultRating)
 
+    const maxLikes = Math.max(...rating)
+
+    const mostPopular = rating.indexOf(maxLikes)
+
     const randomAnecdote = () => {
         const randomize = Math.floor(Math.random() * 8)
         setSelected(randomize)
@@ -32,13 +52,24 @@ const App = () => {
 
     return (
         <>
-            {anecdotes[selected]}
+            <Anecdote
+                anecdotes={anecdotes}
+                rating={rating}
+                index={selected}
+                title='of the day'
+            />
+            
+            <Buttn handler={ratingUp} text='+Like' />
 
             <br />
-            Has {rating[selected]} likes <button onClick={ratingUp}>+Like</button>
+            <Buttn handler={randomAnecdote} text='Next anecdote' />
 
-            <br />
-            <button onClick={randomAnecdote}>Next anecdote</button>
+            <Anecdote
+                anecdotes={anecdotes}
+                rating={rating}
+                index={mostPopular}
+                title='with most likes'
+            />
         </>
     )
 }
