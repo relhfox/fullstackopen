@@ -1,24 +1,7 @@
 import { useState } from 'react'
-
-const List = ({persons, filter}) => {
-    let toShow = []
-
-    if (filter) {
-        toShow = [...persons].filter(obj =>
-            obj.name.toLowerCase().includes(filter.toLowerCase())
-        )
-    } else {
-        toShow = [...persons]
-    }
-
-    return (
-        <div>
-            {toShow.map(person =>
-                <p key={person.name}>{person.name} {person.number}</p>
-            )}
-        </div>
-    )
-}
+import AddForm from './components/AddForm'
+import List from './components/List'
+import Filter from './components/Filter'
 
 const App = () => {
 
@@ -70,17 +53,17 @@ const App = () => {
         <div>
             <h2>Phonebook</h2>
 
-            <form>
-                Name: <input onChange={handleName} value={newName} />
-                <br />
-                Number: <input onChange={handleNumber} value={newNumber} />
-                <br />
-                <button onClick={addName} type="submit">+add</button>
-            </form>
+            <AddForm
+                handleName={handleName}
+                handleNumber={handleNumber}
+                addName={addName}
+                newName={newName}
+                newNumber={newNumber}
+            />
 
             <h2>Numbers</h2>
 
-            Filter by name: <input onChange={handleFilter} value={filter} />
+            <Filter handleFilter={handleFilter} filter={filter} />
             
             <List persons={persons} filter={filter} />
         </div>
