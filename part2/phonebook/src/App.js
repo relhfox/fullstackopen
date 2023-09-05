@@ -1,13 +1,43 @@
 import { useState } from 'react'
 
+const List = ({persons, filter}) => {
+    let toShow = []
+
+    if (filter) {
+        toShow = [...persons].filter(obj =>
+            obj.name.toLowerCase().includes(filter.toLowerCase())
+        )
+    } else {
+        toShow = [...persons]
+    }
+
+    return (
+        <div>
+            {toShow.map(person =>
+                <p key={person.name}>{person.name} {person.number}</p>
+            )}
+        </div>
+    )
+}
+
 const App = () => {
 
     const [persons, setPersons] = useState([
-        { name: 'Arto Hellas', number: '+380 123 23 23' }
+        { name: 'Arto Hellas', number: '+380 123 23 23' },
+        { name: 'John Lennon', number: '+440 342 12 77' },
+        { name: 'Ringo Starr', number: '+560 312 34 52' },
+        { name: 'Paul McCartney', number: '+210 777 45 98' },
+        { name: 'George Harrison', number: '+330 655 65 02' }
     ]) 
+
+    const [filter, setFilter] = useState('')
 
     const [newName, setNewName] = useState('')
     const [newNumber, setNewNumber] = useState('')
+
+    const handleFilter = (event) => {
+        setFilter(event.target.value)
+    }
 
     const handleName = (event) => {
         console.log(event.target.value)
@@ -49,10 +79,10 @@ const App = () => {
             </form>
 
             <h2>Numbers</h2>
+
+            Filter by name: <input onChange={handleFilter} value={filter} />
             
-            {persons.map(person =>
-                <p key={person.name}>{person.name} {person.number}</p>
-            )}
+            <List persons={persons} filter={filter} />
         </div>
     )
 }
