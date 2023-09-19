@@ -1,22 +1,26 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 import AddForm from './components/AddForm'
 import List from './components/List'
 import Filter from './components/Filter'
 
 const App = () => {
 
-    const [persons, setPersons] = useState([
-        { name: 'Arto Hellas', number: '+380 123 23 23' },
-        { name: 'John Lennon', number: '+440 342 12 77' },
-        { name: 'Ringo Starr', number: '+560 312 34 52' },
-        { name: 'Paul McCartney', number: '+210 777 45 98' },
-        { name: 'George Harrison', number: '+330 655 65 02' }
-    ]) 
+    const [persons, setPersons] = useState([])
 
     const [filter, setFilter] = useState('')
 
     const [newName, setNewName] = useState('')
     const [newNumber, setNewNumber] = useState('')
+
+    useEffect(() => {
+        axios
+          .get('http://localhost:3001/persons')
+          .then(response => {
+            console.log('promise fulfilled')
+            setPersons(response.data)
+        })
+    }, [])
 
     const handleFilter = (event) => {
         setFilter(event.target.value)
