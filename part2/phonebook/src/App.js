@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import AddForm from './components/AddForm'
 import List from './components/List'
 import Filter from './components/Filter'
+import requests from './services/requests'
 
 const App = () => {
 
@@ -14,11 +14,11 @@ const App = () => {
     const [newNumber, setNewNumber] = useState('')
 
     useEffect(() => {
-        axios
-          .get('http://localhost:3001/persons')
-          .then(response => {
-            console.log('promise fulfilled')
-            setPersons(response.data)
+        requests
+            .getAll()
+            .then(personsFromServer => {
+                console.log('promise fulfilled')
+                setPersons(personsFromServer)
         })
     }, [])
 
@@ -44,10 +44,17 @@ const App = () => {
         )
 
         if (checkArray.length === 0) {
+
             const nameToAdd = { name: newName, number: newNumber }
-            setPersons(persons.concat(nameToAdd))
-            setNewName('')
-            setNewNumber('')
+            
+            requests
+                .create(nameToAdd)
+                .then(returnedName => {
+                    setPersons(persons.concat(returnedName))
+                    setNewName('')
+                    setNewNumber('')
+            })
+
         } else {
             alert(`${newName} is already added to phonebook`)
         }
@@ -67,9 +74,15 @@ const App = () => {
 
             <h2>Numbers</h2>
 
-            <Filter handleFilter={handleFilter} filter={filter} />
+            <Filter
+                handleFilter={handleFilter}
+                filter={filter}
+            />
             
-            <List persons={persons} filter={filter} />
+            <List
+                persons={persons}
+                filter={filter}
+            />
         </div>
     )
 }
