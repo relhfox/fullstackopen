@@ -39,11 +39,16 @@ const App = () => {
     const addName = (event) => {
         event.preventDefault()
 
-        const checkArray = [...persons].filter(obj =>
-            obj.name.toLowerCase() === newName.toLowerCase()
+        const clearInputs = () => {
+            setNewName('')
+            setNewNumber('')
+        }
+
+        const duplicate = persons.find(person =>
+            person.name.toLowerCase() === newName.toLowerCase()
         )
 
-        if (checkArray.length === 0) {
+        if (!duplicate) {
 
             const nameToAdd = { name: newName, number: newNumber }
             
@@ -51,12 +56,22 @@ const App = () => {
                 .create(nameToAdd)
                 .then(returnedName => {
                     setPersons(persons.concat(returnedName))
-                    setNewName('')
-                    setNewNumber('')
+                    clearInputs()
             })
 
         } else {
-            alert(`${newName} is already added to phonebook`)
+            if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+
+                const url = `http://localhost:3001/persons/${duplicate.id}`
+                const changedObject = { ...duplicate, number: newNumber }
+
+                requests
+                    .update(url, changedObject)
+                    .then(returnedName => {
+                        setPersons(persons.map(person => person.id !== duplicate.id ? person : returnedName))
+                        clearInputs()
+                })
+            }
         }
     }
 
