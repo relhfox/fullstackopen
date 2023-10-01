@@ -1,4 +1,6 @@
-const List = ({persons, filter}) => {
+import requests from '../services/requests'
+
+const List = ({persons, setPersons, filter}) => {
 
     let toShow = []
 
@@ -10,10 +12,23 @@ const List = ({persons, filter}) => {
         toShow = [...persons]
     }
 
+    const handleRemove = (id, name) => {
+        if (window.confirm(`Delete ${name}?`)) {
+            requests
+                .remove(id)
+                .then(response => {
+                    setPersons(persons.filter(person => person.id !== id))
+            })
+        }
+    }
+
     return (
         <div>
             {toShow.map(person =>
-                <p key={person.name}>{person.name} {person.number}</p>
+                <p key={person.name}>
+                    {person.name} {person.number}
+                    <button onClick={() => handleRemove(person.id, person.name)}>delete</button>
+                </p>
             )}
         </div>
     )
