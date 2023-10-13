@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import AddForm from './components/AddForm'
 import List from './components/List'
 import Filter from './components/Filter'
+import Notification from './components/Notification'
 import requests from './services/requests'
 
 const App = () => {
@@ -12,6 +13,8 @@ const App = () => {
 
     const [newName, setNewName] = useState('')
     const [newNumber, setNewNumber] = useState('')
+
+    const [message, setMessage] = useState('')
 
     useEffect(() => {
         requests
@@ -42,6 +45,9 @@ const App = () => {
         const clearInputs = () => {
             setNewName('')
             setNewNumber('')
+            setTimeout(() => {
+                setMessage('')
+            }, 5000)
         }
 
         const duplicate = persons.find(person =>
@@ -56,6 +62,7 @@ const App = () => {
                 .create(nameToAdd)
                 .then(returnedName => {
                     setPersons(persons.concat(returnedName))
+                    setMessage(`${returnedName.name} added to phonebook`)
                     clearInputs()
             })
 
@@ -69,6 +76,7 @@ const App = () => {
                     .update(url, changedObject)
                     .then(returnedName => {
                         setPersons(persons.map(person => person.id !== duplicate.id ? person : returnedName))
+                        setMessage(`${returnedName.name}'s number updated successfully`)
                         clearInputs()
                 })
             }
@@ -78,6 +86,8 @@ const App = () => {
     return (
         <div>
             <h2>Phonebook</h2>
+
+            <Notification message={message} />
 
             <AddForm
                 handleName={handleName}
@@ -97,6 +107,7 @@ const App = () => {
             <List
                 persons={persons}
                 setPersons={setPersons}
+                setMessage={setMessage}
                 filter={filter}
             />
         </div>

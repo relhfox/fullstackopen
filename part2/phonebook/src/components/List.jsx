@@ -1,6 +1,6 @@
 import requests from '../services/requests'
 
-const List = ({persons, setPersons, filter}) => {
+const List = ({persons, setPersons, setMessage, filter}) => {
 
     let toShow = []
 
@@ -18,6 +18,10 @@ const List = ({persons, setPersons, filter}) => {
                 .remove(id)
                 .then(response => {
                     setPersons(persons.filter(person => person.id !== id))
+                    setMessage(`${name} was successfully removed from phonebook`)
+                    setTimeout(() => {
+                        setMessage('')
+                    }, 5000)
             })
         }
     }
