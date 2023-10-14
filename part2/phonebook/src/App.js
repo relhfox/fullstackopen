@@ -22,7 +22,7 @@ const App = () => {
             .then(personsFromServer => {
                 console.log('promise fulfilled')
                 setPersons(personsFromServer)
-        })
+            })
     }, [])
 
     const handleFilter = (event) => {
@@ -64,7 +64,7 @@ const App = () => {
                     setPersons(persons.concat(returnedName))
                     setMessage(`${returnedName.name} added to phonebook`)
                     clearInputs()
-            })
+                })
 
         } else {
             if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
@@ -78,7 +78,12 @@ const App = () => {
                         setPersons(persons.map(person => person.id !== duplicate.id ? person : returnedName))
                         setMessage(`${returnedName.name}'s number updated successfully`)
                         clearInputs()
-                })
+                    })
+                    .catch(error => {
+                        setPersons(persons.filter(person => person.name !== changedObject.name))
+                        setMessage(`Sorry, ${changedObject.name} does not exist in phonebook`)
+                        clearInputs()
+                    })
             }
         }
     }

@@ -13,16 +13,26 @@ const List = ({persons, setPersons, setMessage, filter}) => {
     }
 
     const handleRemove = (id, name) => {
+
+        const resetMessage = () => {
+            setTimeout(() => {
+                setMessage('')
+            }, 5000)
+        }
+
         if (window.confirm(`Delete ${name}?`)) {
             requests
                 .remove(id)
                 .then(response => {
                     setPersons(persons.filter(person => person.id !== id))
                     setMessage(`${name} was successfully removed from phonebook`)
-                    setTimeout(() => {
-                        setMessage('')
-                    }, 5000)
-            })
+                    resetMessage()
+                })
+                .catch(error => {
+                    setPersons(persons.filter(person => person.id !== id))
+                    setMessage(`Sorry, ${name} does not exist in phonebook`)
+                    resetMessage()
+                })
         }
     }
 
