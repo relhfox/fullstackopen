@@ -59,6 +59,8 @@ function App() {
                 search={search}
                 countryData={countryData}
                 getFiltered={getFiltered}
+                setCurrent={setCurrent}
+                setSearch={setSearch}
             />
         </div>
     )

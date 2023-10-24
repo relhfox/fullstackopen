@@ -1,5 +1,5 @@
 
-const SearchResult = ({search, countryData, getFiltered}) => {
+const SearchResult = ({search, countryData, getFiltered, setCurrent, setSearch}) => {
 
     const font = {
         fontSize: 20
@@ -18,11 +18,20 @@ const SearchResult = ({search, countryData, getFiltered}) => {
         }
 
         if (filtered.length > 1) {
+
+            const jumpTo = (country) => {
+                setCurrent(country)
+                setSearch(country)
+            }
+
             return (
                 <div style={font}>
                     <ul>
                         {filtered.map(country =>
-                            <li key={country}>{country}</li>
+                            <li key={country}>
+                                {country}
+                                <button onClick={() => jumpTo(country)}>show</button>
+                            </li>
                         )}
                     </ul>
                 </div>
