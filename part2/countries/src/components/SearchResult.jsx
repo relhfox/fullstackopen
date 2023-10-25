@@ -1,5 +1,5 @@
 
-const SearchResult = ({search, countryData, getFiltered, setCurrent, setSearch}) => {
+const SearchResult = ({search, countryData, weather, getFiltered, setCurrent, setSearch}) => {
 
     const font = {
         fontSize: 20
@@ -38,14 +38,14 @@ const SearchResult = ({search, countryData, getFiltered, setCurrent, setSearch})
             )
         }
 
-        if (countryData) {
+        if (countryData && weather) {
 
             const languages = Object.values(countryData.languages)
 
             return (
                 <div style={font}>
                     <h1>{countryData.name.common}</h1>
-                    <p>Capital: {countryData.capital}</p>
+                    <p>Capital: {countryData.capital[0]}</p>
                     <p>Area: {countryData.area} km2</p>
                     <h2>Languages:</h2>
                     <ul>
@@ -56,6 +56,10 @@ const SearchResult = ({search, countryData, getFiltered, setCurrent, setSearch})
                     <div style={{width: 330, border: 'solid', borderColor: 'lightgray'}}>
                         <img src={countryData.flags.png} />
                     </div>
+                    <h2>Weather in {countryData.capital[0]}</h2>
+                    <p>Temperature: {weather.current.temperature_2m} °C</p>
+                    <p>Cloud cover: {weather.current.cloudcover} %</p>
+                    <p>Wind: {weather.current.windspeed_10m} m/s</p>
                 </div>
             )
         }

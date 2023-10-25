@@ -12,6 +12,8 @@ function App() {
 
     const [countryData, setCountryData] = useState(null)
 
+    const [weather, setWeather] = useState(null)
+
     useEffect(() => {
         axios
             .get('https://studies.cs.helsinki.fi/restcountries/api/all')
@@ -23,10 +25,12 @@ function App() {
     }, [])
 
     useEffect(() => {
-        const filtered = getFiltered()
+        if (search) {
+            const filtered = getFiltered()
 
-        if (filtered.length === 1) {
-            setCurrent(filtered[0])
+            if (filtered.length === 1) {
+                setCurrent(filtered[0])
+            }
         }
     }, [search])
 
@@ -40,6 +44,19 @@ function App() {
                 .catch(err => console.log('A certain country request has failed'))
         }
     }, [current])
+
+    useEffect(() => {
+        if (countryData) {
+            const lat = countryData.capitalInfo.latlng[0]
+            const lng = countryData.capitalInfo.latlng[1]
+            axios
+                .get(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,cloudcover,windspeed_10m&windspeed_unit=ms&forecast_days=1`)
+                .then(response => {
+                    setWeather(response.data)
+                })
+                .catch(err => console.log('A weather request has failed'))
+        }
+    }, [countryData])
 
     const getFiltered = () => {
         const result = [...countries].filter(country =>
@@ -58,6 +75,7 @@ function App() {
             <SearchResult
                 search={search}
                 countryData={countryData}
+                weather={weather}
                 getFiltered={getFiltered}
                 setCurrent={setCurrent}
                 setSearch={setSearch}
