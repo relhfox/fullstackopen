@@ -50,6 +50,13 @@ const App = () => {
             }, 5000)
         }
 
+        const errorHandle = (error) => {
+            setMessage(`Sorry, ${error}`)
+            setTimeout(() => {
+                setMessage('')
+            }, 5000)
+        }
+
         const duplicate = persons.find(person =>
             person.name.toLowerCase() === newName.toLowerCase()
         )
@@ -65,11 +72,14 @@ const App = () => {
                     setMessage(`${returnedName.name} added to phonebook`)
                     clearInputs()
                 })
+                .catch(error => {
+                    errorHandle(error.response.data.error)
+                })
 
         } else {
             if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
 
-                const url = `http://localhost:3001/persons/${duplicate.id}`
+                const url = `/api/persons/${duplicate.id}`
                 const changedObject = { ...duplicate, number: newNumber }
 
                 requests
@@ -80,9 +90,7 @@ const App = () => {
                         clearInputs()
                     })
                     .catch(error => {
-                        setPersons(persons.filter(person => person.name !== changedObject.name))
-                        setMessage(`Sorry, ${changedObject.name} does not exist in phonebook`)
-                        clearInputs()
+                        errorHandle(error.response.data.error)
                     })
             }
         }
