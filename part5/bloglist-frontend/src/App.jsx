@@ -6,12 +6,11 @@ import loginService from './services/login'
 
 const App = () => {
     const [blogs, setBlogs] = useState([])
-
-    const [errorMessage, setErrorMessage] = useState('')
+    const [user, setUser] = useState(null)
+    const [message, setMessage] = useState('')
 
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
-    const [user, setUser] = useState(null)
 
     const [title, setTitle] = useState('')
     const [author, setAuthor] = useState('')
@@ -19,7 +18,7 @@ const App = () => {
 
     useEffect(() => {
         blogService.getAll().then(blogs =>
-            setBlogs( blogs )
+            setBlogs(blogs)
         )  
     }, [])
 
@@ -31,6 +30,13 @@ const App = () => {
             blogService.setToken(user.token)
         }
     }, [])
+
+    const handleMessage = (message) => {
+        setMessage(message)
+        setTimeout(() => {
+            setMessage('')
+        }, 5000)
+    }
 
     const handleLogin = async (event) => {
         event.preventDefault()
@@ -49,17 +55,16 @@ const App = () => {
             setUser(user)
             setUsername('')
             setPassword('')
+            handleMessage('Logged in successfully')
         } catch (exception) {
-            setErrorMessage('Sorry, Wrong credentials')
-            setTimeout(() => {
-                setErrorMessage('')
-            }, 5000)
+            handleMessage('Sorry, wrong credentials')
         }
     }
 
     const handleLogoff = () => {
         window.localStorage.removeItem('loggedBlogappUser')
         setUser(null)
+        handleMessage('Logged out successfully')
     }
 
     const handleCreate = async (event) => {
@@ -73,14 +78,12 @@ const App = () => {
             })
             console.log(response)
             setBlogs(blogs.concat(response))
+            handleMessage(`A new blog "${response.title}" by ${response.author} added`)
             setTitle('')
             setAuthor('')
             setUrl('')
         } catch (exception) {
-            setErrorMessage('Sorry, something wrong')
-            setTimeout(() => {
-                setErrorMessage('')
-            }, 5000)
+            handleMessage('Sorry, something wrong')
         }
     }
 
@@ -89,7 +92,7 @@ const App = () => {
             <>
                 <h2>Log in to the app!</h2>
 
-                <Notification message={errorMessage} />
+                <Notification message={message} />
 
                 <form onSubmit={handleLogin}>
                     <div>
@@ -119,6 +122,8 @@ const App = () => {
     return (
         <>
             <h2>Blogs</h2>
+
+            <Notification message={message} />
 
             Logged in as <b>{user.name}</b>
             <button onClick={handleLogoff}>logoff</button>
