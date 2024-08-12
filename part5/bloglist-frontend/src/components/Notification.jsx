@@ -1,7 +1,9 @@
-const Notification = ({message}) => {
+const Notification = ({ message }) => {
 
-    const success = {
-        color: 'green',
+    const errFlag = message.indexOf('Sorry')
+
+    const notiStyle = {
+        color: errFlag === -1 ? 'green' : 'red',
         background: 'lightgray',
         fontSize: 20,
         fontWeight: 'bold',
@@ -11,27 +13,13 @@ const Notification = ({message}) => {
         padding: 10,
         marginBottom: 10
     }
-
-    const fail = {
-        color: 'red',
-        background: 'lightgray',
-        fontSize: 20,
-        fontWeight: 'bold',
-        borderStyle: 'solid',
-        borderWidth: 3,
-        borderRadius: 10,
-        padding: 10,
-        marginBottom: 10
-    }
-
-    const flag = message.indexOf('Sorry')
 
     if (!message) {
         return null
     }
 
     return (
-        <div style={flag === -1 ? success : fail}>
+        <div style={notiStyle}>
             {message}
         </div>
     )

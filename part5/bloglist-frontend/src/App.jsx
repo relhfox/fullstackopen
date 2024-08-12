@@ -81,56 +81,52 @@ const App = () => {
     }
 
     if (user === null) {
-        return (
-            <>
-                <h2>Log in to the app!</h2>
-
-                <Notification message={message} />
-
-                <form onSubmit={handleLogin}>
-                    <div>
-                        username
-                        <input
-                            type="text"
-                            value={username}
-                            name="Username"
-                            onChange={({ target }) => setUsername(target.value)}
-                        />
-                    </div>
-                    <div>
-                        password
-                        <input
-                            type="password"
-                            value={password}
-                            name="Password"
-                            onChange={({ target }) => setPassword(target.value)}
-                        />
-                    </div>
-                    <button type="submit">login</button>
-                </form>
-            </>
-        )
-    }
-
-    return (
-        <>
-            <h2>Blogs</h2>
+        return (<>
+            <h2>Log in to the app!</h2>
 
             <Notification message={message} />
 
-            Logged in as <b>{user.name}</b>
-            <button onClick={handleLogoff}>logoff</button>
+            <form onSubmit={handleLogin}>
+                <div>
+                    username
+                    <input
+                        type="text"
+                        value={username}
+                        name="Username"
+                        onChange={({ target }) => setUsername(target.value)}
+                    />
+                </div>
+                <div>
+                    password
+                    <input
+                        type="password"
+                        value={password}
+                        name="Password"
+                        onChange={({ target }) => setPassword(target.value)}
+                    />
+                </div>
+                <button type="submit">login</button>
+            </form>
+        </>)
+    }
 
-            <Togglable buttonLabel='Create new blog' ref={blogFormRef}>
-                <CreateBlogForm createBlog={createBlog} />
-            </Togglable>
+    return (<>
+        <h2>Blogs</h2>
 
-            <br />
-            {blogs.map(blog =>
-                <Blog key={blog.id} blog={blog} />
-            )}
-        </>
-    )
+        <Notification message={message} />
+
+        Logged in as <b>{user.name}</b>
+        <button onClick={handleLogoff}>logoff</button>
+
+        <Togglable buttonLabel='Create new blog' ref={blogFormRef}>
+            <CreateBlogForm createBlog={createBlog} />
+        </Togglable>
+
+        <br />
+        {blogs.map(blog =>
+            <Blog key={blog.id} blog={blog} />
+        )}
+    </>)
 }
 
 export default App
