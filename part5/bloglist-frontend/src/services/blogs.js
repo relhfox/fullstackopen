@@ -12,7 +12,7 @@ const getAll = async () => {
     return response.data
 }
 
-const create = async newObject => {
+const create = async (newObject) => {
     const config = {
         headers: { Authorization: token }
     }
@@ -20,4 +20,9 @@ const create = async newObject => {
     return response.data
 }
 
-export default { getAll, create, setToken }
+const update = async (url, objUpdate) => {
+    const response = await axios.put(url, objUpdate)
+    return response.data
+}
+
+export default { getAll, create, update, setToken }

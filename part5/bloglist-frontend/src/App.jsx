@@ -80,6 +80,13 @@ const App = () => {
         }
     }
 
+    const likeUp = async (id, url, objUpdate) => {
+        const response = await blogService.update(url, objUpdate)
+        console.log(response)
+        const updatedBlogs = blogs.map(blog => blog.id !== id ? blog : response)
+        setBlogs(updatedBlogs)
+    }
+
     if (user === null) {
         return (<>
             <h2>Log in to the app!</h2>
@@ -124,7 +131,7 @@ const App = () => {
 
         <br />
         {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} />
+            <Blog key={blog.id} blog={blog} likeUp={likeUp} />
         )}
     </>)
 }
