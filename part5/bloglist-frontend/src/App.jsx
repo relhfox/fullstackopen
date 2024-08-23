@@ -15,9 +15,12 @@ const App = () => {
     const [password, setPassword] = useState('')
 
     useEffect(() => {
-        blogService.getAll().then(blogs =>
-            setBlogs(blogs)
-        )  
+        blogService
+            .getAll()
+            .then(blogs => {
+                blogs.sort((a, b) => b.likes - a.likes)
+                setBlogs(blogs)
+            })
     }, [])
 
     useEffect(() => {
@@ -72,7 +75,7 @@ const App = () => {
             blogFormRef.current.toggleVisibility()
             const response = await blogService.create(newBlog)
             console.log(response)
-            setBlogs(blogs.concat(response))
+            setBlogs(blogs.concat(response).sort((a, b) => b.likes - a.likes))
             handleMessage(`A new blog "${response.title}" by ${response.author} added`)
             
         } catch (exception) {
@@ -84,6 +87,7 @@ const App = () => {
         const response = await blogService.update(url, objUpdate)
         console.log(response)
         const updatedBlogs = blogs.map(blog => blog.id !== id ? blog : response)
+        updatedBlogs.sort((a, b) => b.likes - a.likes)
         setBlogs(updatedBlogs)
     }
 
