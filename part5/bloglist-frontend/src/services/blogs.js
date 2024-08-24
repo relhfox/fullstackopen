@@ -25,4 +25,15 @@ const update = async (url, objUpdate) => {
     return response.data
 }
 
-export default { getAll, create, update, setToken }
+const remove = async (url) => {
+    const response = await axios.delete(url)
+    return response.data
+}
+
+export default {
+    getAll,
+    create,
+    update,
+    remove,
+    setToken
+}

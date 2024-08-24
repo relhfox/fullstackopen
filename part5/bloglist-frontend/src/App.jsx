@@ -91,6 +91,16 @@ const App = () => {
         setBlogs(updatedBlogs)
     }
 
+    const deleteBlog = async (id, url, title, author) => {
+        if (window.confirm(`Remove "${title}" by ${author}?`)) {
+            await blogService.remove(url)
+            const updatedBlogs = blogs.filter(blog => blog.id !== id)
+            updatedBlogs.sort((a, b) => b.likes - a.likes)
+            setBlogs(updatedBlogs)
+            handleMessage(`Blog "${title}" by ${author} has been deleted`)
+        }
+    }
+
     if (user === null) {
         return (<>
             <h2>Log in to the app!</h2>
@@ -135,7 +145,13 @@ const App = () => {
 
         <br />
         {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} likeUp={likeUp} />
+            <Blog
+                key={blog.id}
+                blog={blog}
+                user={user.username}
+                likeUp={likeUp}
+                deleteBlog={deleteBlog}
+            />
         )}
     </>)
 }
