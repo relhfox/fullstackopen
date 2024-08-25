@@ -77,7 +77,7 @@ const App = () => {
             console.log(response)
             setBlogs(blogs.concat(response).sort((a, b) => b.likes - a.likes))
             handleMessage(`A new blog "${response.title}" by ${response.author} added`)
-            
+
         } catch (exception) {
             handleMessage('Sorry, something wrong')
         }
