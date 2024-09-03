@@ -12,12 +12,16 @@ describe('<Blog />', () => {
         user: { name: 'Harry', username: 'potter' }
     }
     const user = 'potter'
-
+    const mockHandler = vi.fn()
     let container
 
     beforeEach(() => {
         container = render(
-            <Blog blog={blog} user={user} />
+            <Blog
+                blog={blog}
+                user={user}
+                likeUp={mockHandler}
+            />
         ).container
     })
 
@@ -44,5 +48,15 @@ describe('<Blog />', () => {
 
         const div = container.querySelector('.togglable')
         expect(div).not.toHaveStyle('display: none')
+    })
+
+    test('clicking the like button twice calls event handler twice', async () => {
+        const user = userEvent.setup()
+        const button = screen.getByText('like')
+
+        await user.click(button)
+        await user.click(button)
+
+        expect(mockHandler.mock.calls).toHaveLength(2)
     })
 })
