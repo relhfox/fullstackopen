@@ -2,7 +2,7 @@ import { useState } from 'react'
 import PropTypes from 'prop-types'
 
 const Blog = ({ blog, user, likeUp, deleteBlog }) => {
-    const [visible, setVisible] = useState(false)
+    const [ visible, setVisible ] = useState(false)
 
     const blogStyle = {
         paddingTop: 10,
@@ -26,12 +26,12 @@ const Blog = ({ blog, user, likeUp, deleteBlog }) => {
     }
 
     return (
-        <div style={blogStyle}>
+        <div style={blogStyle} className='blog'>
             {blog.title} / {blog.author} {' '}
             <button onClick={() => setVisible(!visible)}>
                 {visible ? 'hide' : 'view'}
             </button>
-            <div style={{ display: visible ? '' : 'none' }}>
+            <div style={{ display: visible ? '' : 'none' }} className='togglable'>
                 {blog.url}<br />
                 likes: {blog.likes} <button onClick={handleLike}>like</button><br />
                 {blog.user.name}<br />

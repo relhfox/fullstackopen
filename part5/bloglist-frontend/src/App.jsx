@@ -7,12 +7,12 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 
 const App = () => {
-    const [blogs, setBlogs] = useState([])
-    const [user, setUser] = useState(null)
-    const [message, setMessage] = useState('')
+    const [ blogs, setBlogs ] = useState([])
+    const [ user, setUser ] = useState(null)
+    const [ message, setMessage ] = useState('')
 
-    const [username, setUsername] = useState('')
-    const [password, setPassword] = useState('')
+    const [ username, setUsername ] = useState('')
+    const [ password, setPassword ] = useState('')
 
     useEffect(() => {
         blogService
