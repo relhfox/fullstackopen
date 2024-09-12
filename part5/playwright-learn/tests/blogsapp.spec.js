@@ -1,17 +1,18 @@
 const { test, expect, beforeEach, describe } = require('@playwright/test')
+const { loginWith, createBlog } = require('./helper')
 
 describe('Blog app', () => {
 
     beforeEach(async ({ page, request }) => {
-        await request.post('http://localhost:3003/api/testing/reset')
-        await request.post('http://localhost:3003/api/users', {
+        await request.post('/api/testing/reset')
+        await request.post('/api/users', {
             data: {
                 name: 'Testing Bot',
                 username: 'tester',
                 password: '123'
             }
         })
-        await page.goto('http://localhost:5173')
+        await page.goto('/')
     })
 
     test('Login form is shown', async ({ page }) => {
@@ -21,10 +22,8 @@ describe('Blog app', () => {
 
     describe('Login', () => {
         test('succeeds with correct credentials', async ({ page }) => {
-            await page.getByTestId('username').fill('tester')
-            await page.getByTestId('password').fill('123')
-            await page.getByRole('button', { name: 'login' }).click()
-        
+            await loginWith(page, 'tester', '123')
+
             await expect(page.getByText('Logged in successfully')).toBeVisible()
             await expect(page.getByText('Sorry, wrong credentials')).not.toBeVisible()
 
@@ -33,10 +32,8 @@ describe('Blog app', () => {
         })
 
         test('fails with wrong credentials', async ({ page }) => {
-            await page.getByTestId('username').fill('tester')
-            await page.getByTestId('password').fill('wrong')
-            await page.getByRole('button', { name: 'login' }).click()
-        
+            await loginWith(page, 'tester', 'wrongpass')
+
             await expect(page.getByText('Sorry, wrong credentials')).toBeVisible()
             await expect(page.getByText('Logged in successfully')).not.toBeVisible()
 
@@ -47,20 +44,20 @@ describe('Blog app', () => {
 
     describe('When logged in', () => {
         beforeEach(async ({ page }) => {
-            await page.getByTestId('username').fill('tester')
-            await page.getByTestId('password').fill('123')
-            await page.getByRole('button', { name: 'login' }).click()
+            await loginWith(page, 'tester', '123')
         })
-      
+
         test('a new blog can be created', async ({ page }) => {
-            await page.getByRole('button', { name: 'Create new blog' }).click()
+            await createBlog(page, 'Posted by Playwright bot', 'Testinator', 'http://some.test')
+            await expect(page.getByTestId('blog')).toContainText('Posted by Playwright bot')
+        })
 
-            await page.getByTestId('title-input').fill('Just a testing blog posted by Playwright bot')
-            await page.getByTestId('author-input').fill('Testinator')
-            await page.getByTestId('url-input').fill('http://some.test')
-            await page.getByRole('button', { name: 'submit' }).click()
+        test('a blog can be liked', async ({ page }) => {
+            await createBlog(page, 'Posted by Playwright bot', 'Testinator', 'http://some.test')
+            await page.getByRole('button', { name: 'view' }).click()
+            await page.getByRole('button', { name: 'like' }).click()
 
-            await expect(page.getByTestId('blog')).toContainText('Just a testing blog posted by Playwright bot')
+            await expect(page.getByTestId('blog')).toContainText('likes: 1')
         })
     })
 })
