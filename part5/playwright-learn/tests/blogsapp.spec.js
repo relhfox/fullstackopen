@@ -59,5 +59,16 @@ describe('Blog app', () => {
 
             await expect(page.getByTestId('blog')).toContainText('likes: 1')
         })
+
+        test('a user who added the blog can delete the blog', async ({ page }) => {
+            await createBlog(page, 'Posted by Playwright bot', 'Testinator', 'http://some.test')
+            await page.getByRole('button', { name: 'view' }).click()
+
+            page.on('dialog', dialog => dialog.accept())
+            await page.getByRole('button', { name: 'remove' }).click()
+
+            await expect(page.locator('.notification')).toContainText('has been deleted')
+            await expect(page.getByText('Posted by Playwright bot')).not.toBeVisible()
+        })
     })
 })
