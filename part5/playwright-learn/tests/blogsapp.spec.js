@@ -70,5 +70,28 @@ describe('Blog app', () => {
             await expect(page.locator('.notification')).toContainText('has been deleted')
             await expect(page.getByText('Posted by Playwright bot')).not.toBeVisible()
         })
+
+        test('only the user who added the blog sees the delete button', async ({ page, request }) => {
+            await createBlog(page, 'Posted by Playwright bot', 'Testinator', 'http://some.test')
+            await page.getByRole('button', { name: 'view' }).click()
+
+            await expect(page.getByRole('button', { name: 'remove' })).toBeVisible()
+
+            await page.getByRole('button', { name: 'logoff' }).click()
+
+            await request.post('/api/users', {
+                data: {
+                    name: 'Another Bot',
+                    username: 'imposter',
+                    password: '456'
+                }
+            })
+            await loginWith(page, 'imposter', '456')
+            await page.getByRole('button', { name: 'view' }).click()
+
+            await expect(page.getByText('Logged in as Another Bot')).toBeVisible()
+            await expect(page.getByText('Posted by Playwright bot / Testinator')).toBeVisible()
+            await expect(page.getByRole('button', { name: 'remove' })).not.toBeVisible()
+        })
     })
 })
