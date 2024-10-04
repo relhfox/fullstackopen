@@ -93,5 +93,33 @@ describe('Blog app', () => {
             await expect(page.getByText('Posted by Playwright bot / Testinator')).toBeVisible()
             await expect(page.getByRole('button', { name: 'remove' })).not.toBeVisible()
         })
+
+        test('blogs are arranged in order by likes', async ({ page }) => {
+            await createBlog(page, 'The first blog', 'Firstinator', 'http://some.test')
+            await createBlog(page, 'The second blog', 'Testinator', 'http://some.test')
+            await createBlog(page, 'The third blog', 'Thirdinator', 'http://some.test')
+
+            const firstBlog = await page.getByTestId('blog').filter({ hasText: 'The first blog / Firstinator' })
+            await firstBlog.getByRole('button', { name: 'view' }).click()
+
+            const secondBlog = await page.getByTestId('blog').filter({ hasText: 'The second blog / Testinator' })
+            await secondBlog.getByRole('button', { name: 'view' }).click()
+
+            const thirdBlog = await page.getByTestId('blog').filter({ hasText: 'The third blog / Thirdinator' })
+            await thirdBlog.getByRole('button', { name: 'view' }).click()
+
+            await expect(page.getByTestId('blog').first()).toContainText('The first blog / Firstinator')
+            await expect(page.getByTestId('blog').last()).toContainText('The third blog / Thirdinator')
+
+            await thirdBlog.getByRole('button', { name: 'like' }).click()
+            await page.getByText('likes: 1').waitFor()
+            await thirdBlog.getByRole('button', { name: 'like' }).click()
+            await page.getByText('likes: 2').waitFor()
+
+            await secondBlog.getByRole('button', { name: 'like' }).click()
+
+            await expect(page.getByTestId('blog').first()).toContainText('The third blog / Thirdinator')
+            await expect(page.getByTestId('blog').last()).toContainText('The first blog / Firstinator')
+        })
     })
 })
